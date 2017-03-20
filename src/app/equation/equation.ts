@@ -4,7 +4,6 @@ export class Equation {
   public lexerErrors? : any;
   public parserErrors? : any;
   public expressionTree? : IExpression;
-  public rawTeX? : string;
 
   constructor(lexerErrors? : any, parserErors? : any, expressionTree? : IExpression)
   {
@@ -14,14 +13,16 @@ export class Equation {
     if(parserErors && parserErors.length > 0) {
       this.parserErrors = parserErors;
     }
-    this.expressionTree = expressionTree;
-    if(expressionTree){
-      this.rawTeX = this.getRawTeX();
+    if(!this.lexerErrors && !this.parserErrors) {
+      this.expressionTree = expressionTree;
     }
   }
 
-  public getRawTeX() : string
-  {
-    return this.expressionTree ? this.expressionTree.getRawTeX() : "";
+  get RawTeX() : string {
+    return this.expressionTree ? this.expressionTree.getRawTeX() : null;
+  }
+
+  get VariableList() : string[] {
+    return this.expressionTree ? this.expressionTree.getVariableNames() : null;
   }
 }
