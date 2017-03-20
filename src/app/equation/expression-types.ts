@@ -7,6 +7,7 @@ export interface IExpression {
   operands?: IExpression[];
 
   getRawTeX() : string;
+  getVariableNames() : string[];
 }
 
 //Value types from here
@@ -25,6 +26,10 @@ export abstract class ValueExpression implements IExpression {
 
   public getRawTeX() : string {
     return this.value;
+  }
+
+  public getVariableNames() : string[] {
+    return [];
   }
 }
 
@@ -50,6 +55,17 @@ export class DecimalExpression extends ValueExpression {
   }
 }
 
+export class VariableExpression extends ValueExpression {
+  constructor(value : string)
+  {
+    super("variable", value);
+  }
+
+  public getVariableNames() : string[] {
+    return [this.value];
+  }
+}
+
 export class MinusOneExpression implements IExpression {
   public type : string;
 
@@ -61,12 +77,9 @@ export class MinusOneExpression implements IExpression {
   public getRawTeX() : string {
     return "";
   }
-}
 
-export class VariableExpression extends ValueExpression {
-  constructor(value : string)
-  {
-    super("variable", value);
+  public getVariableNames() : string[] {
+    return [];
   }
 }
 
@@ -133,6 +146,17 @@ export class OperatorExpression implements IExpression {
 
   private getPrecedence() : number {
     return OperatorExpression.precedence[this.type];
+  }
+
+  public getVariableNames() : string[] {
+    var variables = new Set<string>();
+    for(let operand of this.operands) {
+      let variablesToAdd = operand.getVariableNames();
+      for(let variable of variablesToAdd) {
+        variables.add(variable);
+      }
+    }
+    return Array.from(variables);
   }
 }
 
