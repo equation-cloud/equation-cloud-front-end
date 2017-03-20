@@ -1,0 +1,25 @@
+<div *ngIf="equation && equation.lexerErrors" class="alert alert-danger w-75 mx-auto" role="alert">
+  <h4 class="alert-heading">Lexer Errors</h4>
+  <ul class="mb-0">
+    <li *ngFor="let error of equation.lexerErrors">{{ error.message }}</li>
+  </ul>
+</div>
+<div *ngIf="equation && equation.parserErrors" class="alert alert-danger w-75 mx-auto" role="alert">
+  <h4 class="alert-heading">Parser Errors</h4>
+  <ul class="mb-0">
+    <li *ngFor="let error of equation.parserErrors">{{ error.message }}</li>
+  </ul>
+</div>
+<div class="card w-75 mx-auto mb-3">
+  <div class="card-block">
+    <div class="input-group input-group-lg">
+      <span class="input-group-addon">Equation:</span>
+      <input type="text" class="form-control" [(ngModel)]="inputString" placeholder="y=\sqrt{x}" (keyup.enter)="updateEquation()">
+    </div>
+  </div>
+</div>
+<div *ngIf="equation && equation.rawTeX" class="card w-75 mx-auto">
+  <div class="card-block text-center">
+    <div [MathJax]="equation.rawTeX"></div>
+  </div>
+</div>
