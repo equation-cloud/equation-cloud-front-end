@@ -20,6 +20,6 @@
 </div>
 <div *ngIf="equation && equation.RawTeX" class="card w-75 mx-auto">
   <div class="card-block text-center">
-    <div [MathJax]="equation.RawTeX"></div>
+    <div [MathJax]="equation.DecoratedTeX"></div>
   </div>
 </div>
