@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MathJaxDirective } from '../mathjax.directive';
-import { ParserService } from '../equation/parser.service';
-import { EquationService } from '../equation/equation.service';
-import { Equation } from '../equation/equation';
+import { ParserService } from '../equation-compiler/parser.service';
+import { EquationService } from '../equation-compiler/equation.service';
+import { Equation } from '../equation-compiler/equation';
 
 @Component({
   selector: 'app-equations',
