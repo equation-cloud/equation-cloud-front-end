@@ -22,4 +22,9 @@
   <div class="card-block text-center">
     <div [MathJax]="equation.RawTeX"></div>
   </div>
+  <div class="card-footer text-right">
+    <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="equation.RawTeX">
+      <i class="fa fa-clipboard fa-lg" aria-hidden="true"></i> Copy TeX
+    </button>
+  </div>
 </div>
