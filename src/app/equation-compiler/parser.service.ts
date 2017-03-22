@@ -20,7 +20,7 @@ export class ParserService {
   static AllTokens: any;
 
   constructor() {
-    ParserService.AllTokens = [Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide];
+    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide];
     this.lexer = new Lexer(ParserService.AllTokens);
     this.parser = new EquationParser([]);
    }
@@ -186,6 +186,11 @@ class EquationParser extends Parser {
 }
 
 //The chevrotain token classes for the lexer
+class Whitespace extends Token {
+  static PATTERN = /\s+/;
+  static GROUP = Lexer.SKIPPED; 
+}
+
 class Integer extends Token {
   static PATTERN = /\d+/;
 }
