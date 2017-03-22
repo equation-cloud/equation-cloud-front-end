@@ -10,7 +10,8 @@ import {
   SubtractionExpression,
   AdditionExpression,
   MultiplicationExpression,
-  DivisionExpression
+  DivisionExpression,
+  PowerExpression
 } from './expression-types';
 
 @Injectable()
@@ -20,7 +21,7 @@ export class ParserService {
   static AllTokens: any;
 
   constructor() {
-    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide];
+    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide, Power];
     this.lexer = new Lexer(ParserService.AllTokens);
     this.parser = new EquationParser([]);
    }
@@ -42,6 +43,7 @@ interface EquationParser {
   selectDecimal: () => IExpression;
   selectVariable: () => IExpression;
   selectAtomic: () => IExpression;
+  selectPower: () => IExpression;
   selectDivision: () => IExpression;
   selectMultiplication: () => IExpression;
   selectAddition: () => IExpression;
@@ -127,10 +129,10 @@ class EquationParser extends Parser {
    });
 
    this.RULE<IExpression>("selectDivision", () => {
-      var operands = [this.SUBRULE<IExpression>(this.selectAtomic)];
+      var operands = [this.SUBRULE<IExpression>(this.selectPower)];
       this.OPTION(() => {
         this.CONSUME(Divide);
-        operands.push(this.SUBRULE2<IExpression>(this.selectAtomic));
+        operands.push(this.SUBRULE2<IExpression>(this.selectPower));
       });
       if(operands.length == 1){
         return operands[0];
@@ -141,6 +143,23 @@ class EquationParser extends Parser {
         }
         return expression;
       }
+   });
+
+   this.RULE<IExpression>("selectPower", () => {
+     var operands = [this.SUBRULE<IExpression>(this.selectAtomic)];
+     this.OPTION(() => {
+       this.CONSUME(Power);
+       operands.push(this.SUBRULE2<IExpression>(this.selectAtomic));
+     });
+     if(operands.length == 1){
+       return operands[0];
+     } else {
+       let expression = new PowerExpression(operands);
+       for(let operand of operands){
+         operand.parent = expression;
+       }
+       return expression;
+     }
    });
 
     this.RULE<IExpression>("selectAtomic", () => {
@@ -221,6 +240,10 @@ class Times extends Token {
 
 class Divide extends Token {
   static PATTERN = /\//;
+}
+
+class Power extends Token {
+  static PATTERN = /\^/;
 }
 
 class LeftBracket extends Token {

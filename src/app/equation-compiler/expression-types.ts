@@ -180,3 +180,10 @@ export class DivisionExpression extends OperatorExpression {
     super("division", operands, ["\\frac{", "}{", "}"], parent);
   }
 }
+
+export class PowerExpression extends OperatorExpression {
+  constructor(operands : IExpression[], parent? : IExpression)
+  {
+    super("power", operands, ["","^{","}"]);
+  }
+}
