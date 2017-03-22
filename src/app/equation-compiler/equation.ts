@@ -21,7 +21,6 @@ export class Equation {
       this.generateItemLists(this.expressionTree);
       this.rawTeX = this.expressionTree.getTeX(false);
       this.decoratedTeX = this.expressionTree.getTeX(true);
-      console.log([this.expressionTree, this.decoratedTeX]);
     }
   }
 
