@@ -8,6 +8,7 @@ import { NavComponent } from './nav/nav.component';
 import { MathJaxDirective } from './mathjax.directive';
 import { EquationsComponent } from './equations/equations.component';
 import { AppReadyEventService } from './app-ready-event.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AppReadyEventService } from './app-ready-event.service';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    ClipboardModule
   ],
   providers: [
     AppReadyEventService
