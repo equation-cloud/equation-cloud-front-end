@@ -65,6 +65,9 @@ export class Equation {
             })
           }
           break;
+        case "integer":
+        case "decimal":
+          break;
         default:
           console.error("Unrecognized expression type: " + expression.type);
           return;
