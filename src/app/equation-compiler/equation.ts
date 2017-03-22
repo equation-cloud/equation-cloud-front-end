@@ -21,7 +21,7 @@ export class Equation {
       this.generateItemLists(this.expressionTree);
       this.rawTeX = this.expressionTree.getTeX(false);
       this.decoratedTeX = this.expressionTree.getTeX(true);
-      console.log(this.decoratedTeX);
+      console.log([this.expressionTree, this.decoratedTeX]);
     }
   }
 
@@ -49,12 +49,18 @@ export class Equation {
       }
     } else {
       switch(expression.type){
+        case "function":
+          for(let operand of expression.operands){
+            this.generateItemLists(operand);
+          }
+          break;
         case "variable":
           let item = this.variables.find((value, index, obj) => {
             return value.name == expression.value;
           });
           if(item) {
             let id = expression.value + "_" + item.ids.length;
+            expression['id'] = id;
             item.ids.push(id);
           } else {
             let id = expression.value + "_0";

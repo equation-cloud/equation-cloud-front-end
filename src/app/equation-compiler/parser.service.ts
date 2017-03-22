@@ -5,6 +5,7 @@ import {
   IntegerExpression,
   DecimalExpression,
   VariableExpression,
+  FunctionExpression,
   MinusOneExpression,
   EqualsExpression,
   SubtractionExpression,
@@ -21,7 +22,7 @@ export class ParserService {
   static AllTokens: any;
 
   constructor() {
-    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide, Power];
+    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Comma, Equals, Plus, Minus, Times, Divide, Power];
     this.lexer = new Lexer(ParserService.AllTokens);
     this.parser = new EquationParser([]);
    }
@@ -42,6 +43,7 @@ interface EquationParser {
   selectInteger: () => IExpression;
   selectDecimal: () => IExpression;
   selectVariable: () => IExpression;
+  selectFunction: () => IExpression;
   selectAtomic: () => IExpression;
   selectPower: () => IExpression;
   selectDivision: () => IExpression;
@@ -172,16 +174,28 @@ class EquationParser extends Parser {
           this.CONSUME(RightBracket);
           return expression;
         }},
-        {ALT: () => { return this.SUBRULE3<IExpression>(this.selectVariable)}},
+        {ALT: () => { return this.SUBRULE3<IExpression>(this.selectFunction)}},
+        {ALT: () => { return this.SUBRULE4<IExpression>(this.selectVariable)}},
         {ALT: () => {
           this.CONSUME(Minus);
-          var expression = this.SUBRULE4<IExpression>(this.selectAtomic);
+          var expression = this.SUBRULE5<IExpression>(this.selectAtomic);
           return new MultiplicationExpression([
             new MinusOneExpression(),
             expression
           ]);
         }}
       ]);
+    });
+
+    this.RULE<IExpression>("selectFunction", () => {
+      var operands : IExpression[] = [];
+      let name = getImage(this.CONSUME(Variable));
+      this.CONSUME(LeftBracket);
+      this.MANY_SEP(Comma, () => {
+        operands.push(this.SUBRULE<IExpression>(this.selectExpression));
+      });
+      this.CONSUME(RightBracket);
+      return new FunctionExpression(name, operands);
     });
 
     this.RULE<VariableExpression>("selectVariable", () => {
@@ -252,4 +266,8 @@ class LeftBracket extends Token {
 
 class RightBracket extends Token {
   static PATTERN = /\)/;
+}
+
+class Comma extends Token {
+  static PATTERN = /,/;
 }
