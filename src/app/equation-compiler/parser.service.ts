@@ -5,12 +5,14 @@ import {
   IntegerExpression,
   DecimalExpression,
   VariableExpression,
+  FunctionExpression,
   MinusOneExpression,
   EqualsExpression,
   SubtractionExpression,
   AdditionExpression,
   MultiplicationExpression,
-  DivisionExpression
+  DivisionExpression,
+  PowerExpression
 } from './expression-types';
 
 @Injectable()
@@ -20,7 +22,7 @@ export class ParserService {
   static AllTokens: any;
 
   constructor() {
-    ParserService.AllTokens = [Integer, Dot, Variable, LeftBracket, RightBracket, Equals, Plus, Minus, Times, Divide];
+    ParserService.AllTokens = [Whitespace, Integer, Dot, Variable, LeftBracket, RightBracket, Comma, Equals, Plus, Minus, Times, Divide, Power];
     this.lexer = new Lexer(ParserService.AllTokens);
     this.parser = new EquationParser([]);
    }
@@ -41,7 +43,9 @@ interface EquationParser {
   selectInteger: () => IExpression;
   selectDecimal: () => IExpression;
   selectVariable: () => IExpression;
+  selectFunction: () => IExpression;
   selectAtomic: () => IExpression;
+  selectPower: () => IExpression;
   selectDivision: () => IExpression;
   selectMultiplication: () => IExpression;
   selectAddition: () => IExpression;
@@ -127,10 +131,10 @@ class EquationParser extends Parser {
    });
 
    this.RULE<IExpression>("selectDivision", () => {
-      var operands = [this.SUBRULE<IExpression>(this.selectAtomic)];
+      var operands = [this.SUBRULE<IExpression>(this.selectPower)];
       this.OPTION(() => {
         this.CONSUME(Divide);
-        operands.push(this.SUBRULE2<IExpression>(this.selectAtomic));
+        operands.push(this.SUBRULE2<IExpression>(this.selectPower));
       });
       if(operands.length == 1){
         return operands[0];
@@ -143,6 +147,23 @@ class EquationParser extends Parser {
       }
    });
 
+   this.RULE<IExpression>("selectPower", () => {
+     var operands = [this.SUBRULE<IExpression>(this.selectAtomic)];
+     this.OPTION(() => {
+       this.CONSUME(Power);
+       operands.push(this.SUBRULE2<IExpression>(this.selectAtomic));
+     });
+     if(operands.length == 1){
+       return operands[0];
+     } else {
+       let expression = new PowerExpression(operands);
+       for(let operand of operands){
+         operand.parent = expression;
+       }
+       return expression;
+     }
+   });
+
     this.RULE<IExpression>("selectAtomic", () => {
       return this.OR<IExpression>([
         {ALT: () => { return this.SUBRULE<IExpression>(this.selectDecimal)}},
@@ -153,16 +174,28 @@ class EquationParser extends Parser {
           this.CONSUME(RightBracket);
           return expression;
         }},
-        {ALT: () => { return this.SUBRULE3<IExpression>(this.selectVariable)}},
+        {ALT: () => { return this.SUBRULE3<IExpression>(this.selectFunction)}},
+        {ALT: () => { return this.SUBRULE4<IExpression>(this.selectVariable)}},
         {ALT: () => {
           this.CONSUME(Minus);
-          var expression = this.SUBRULE4<IExpression>(this.selectAtomic);
+          var expression = this.SUBRULE5<IExpression>(this.selectAtomic);
           return new MultiplicationExpression([
             new MinusOneExpression(),
             expression
           ]);
         }}
       ]);
+    });
+
+    this.RULE<IExpression>("selectFunction", () => {
+      var operands : IExpression[] = [];
+      let name = getImage(this.CONSUME(Variable));
+      this.CONSUME(LeftBracket);
+      this.MANY_SEP(Comma, () => {
+        operands.push(this.SUBRULE<IExpression>(this.selectExpression));
+      });
+      this.CONSUME(RightBracket);
+      return new FunctionExpression(name, operands);
     });
 
     this.RULE<VariableExpression>("selectVariable", () => {
@@ -186,6 +219,11 @@ class EquationParser extends Parser {
 }
 
 //The chevrotain token classes for the lexer
+class Whitespace extends Token {
+  static PATTERN = /\s+/;
+  static GROUP = Lexer.SKIPPED; 
+}
+
 class Integer extends Token {
   static PATTERN = /\d+/;
 }
@@ -218,10 +256,18 @@ class Divide extends Token {
   static PATTERN = /\//;
 }
 
+class Power extends Token {
+  static PATTERN = /\^/;
+}
+
 class LeftBracket extends Token {
   static PATTERN = /\(/;
 }
 
 class RightBracket extends Token {
   static PATTERN = /\)/;
+}
+
+class Comma extends Token {
+  static PATTERN = /,/;
 }

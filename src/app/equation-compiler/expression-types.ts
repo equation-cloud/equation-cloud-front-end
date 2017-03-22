@@ -10,6 +10,36 @@ export interface IExpression {
   getTeX(decorate : boolean) : string;
 }
 
+//Function types from here
+
+export class FunctionExpression implements IExpression {
+  public type: string;
+  public value: string;
+  public operands: IExpression[];
+  public parent?: IExpression;
+
+  constructor(name : string, operands : IExpression[], parent?: IExpression)
+  {
+    this.type = "function";
+    this.value = name;
+    this.operands = operands;
+    this.parent = parent;
+  }
+
+  public getTeX(decorate : boolean) : string {
+    var output : string = "";
+    output = output + this.value + "\\left(";
+    for(var i = 0; i < this.operands.length; i++){
+      output = output + this.operands[i].getTeX(decorate)
+      if(i < this.operands.length - 1){
+        output = output + ",";
+      }
+    }
+    output = output + "\\right)";
+    return output;
+  }
+}
+
 //Value types from here
 
 export abstract class ValueExpression implements IExpression {
@@ -178,5 +208,12 @@ export class DivisionExpression extends OperatorExpression {
   constructor(operands : IExpression[], parent? : IExpression)
   {
     super("division", operands, ["\\frac{", "}{", "}"], parent);
+  }
+}
+
+export class PowerExpression extends OperatorExpression {
+  constructor(operands : IExpression[], parent? : IExpression)
+  {
+    super("power", operands, ["","^{","}"]);
   }
 }
