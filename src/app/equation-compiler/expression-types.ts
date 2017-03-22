@@ -2,12 +2,12 @@ export interface IExpression {
   type: string;
   parent?: IExpression;
   value?: string;
+  id? : string;
   integerPart?: string;
   fractionalPart?: string;
   operands?: IExpression[];
 
-  getRawTeX() : string;
-  getVariableNames() : string[];
+  getTeX(decorate : boolean) : string;
 }
 
 //Value types from here
@@ -16,6 +16,7 @@ export abstract class ValueExpression implements IExpression {
   public type: string;
   public parent?: IExpression;
   public value: string;
+  public id?: string;
 
   constructor (type: string, value: string, parent?: IExpression)
   {
@@ -24,8 +25,12 @@ export abstract class ValueExpression implements IExpression {
     this.value = value;
   }
 
-  public getRawTeX() : string {
-    return this.value;
+  public getTeX(decorate : boolean) : string {
+    if(decorate) {
+      return "\\cssId{" + this.id + "}{" + this.value + "}";
+    } else {
+      return this.value;
+    }
   }
 
   public getVariableNames() : string[] {
@@ -60,10 +65,6 @@ export class VariableExpression extends ValueExpression {
   {
     super("variable", value);
   }
-
-  public getVariableNames() : string[] {
-    return [this.value];
-  }
 }
 
 export class MinusOneExpression implements IExpression {
@@ -74,12 +75,8 @@ export class MinusOneExpression implements IExpression {
     this.type = "minusOne";
   }
 
-  public getRawTeX() : string {
+  public getTeX(decorate: boolean) : string {
     return "";
-  }
-
-  public getVariableNames() : string[] {
-    return [];
   }
 }
 
@@ -106,7 +103,7 @@ export class OperatorExpression implements IExpression {
     this.texSymbols = texSymbols;
   }
 
-  public getRawTeX() : string {
+  public getTeX(decorate: boolean) : string {
     var requiresBrackets = false;
     if(this.parent && 
       this.parent instanceof OperatorExpression &&
@@ -134,7 +131,7 @@ export class OperatorExpression implements IExpression {
         //Do this for every operand
         outputString = outputString + this.texSymbols[1];
       }
-      outputString = outputString + operand.getRawTeX();
+      outputString = outputString + operand.getTeX(decorate);
     }
     //Now close the TeX output down
     outputString = outputString + this.texSymbols[2];
@@ -146,17 +143,6 @@ export class OperatorExpression implements IExpression {
 
   private getPrecedence() : number {
     return OperatorExpression.precedence[this.type];
-  }
-
-  public getVariableNames() : string[] {
-    var variables = new Set<string>();
-    for(let operand of this.operands) {
-      let variablesToAdd = operand.getVariableNames();
-      for(let variable of variablesToAdd) {
-        variables.add(variable);
-      }
-    }
-    return Array.from(variables);
   }
 }
 
