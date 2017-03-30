@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, Renderer, OnInit } from '@angular/core';
 import { MathJaxDirective } from '../mathjax.directive';
 import { ParserService } from '../equation-compiler/parser.service';
 import { EquationService } from '../equation-compiler/equation.service';
@@ -13,10 +13,15 @@ import { Equation } from '../equation-compiler/equation';
 export class EquationsComponent implements OnInit {
   inputString = '';
   equation = null;
+  elementRef: ElementRef;
 
   constructor(
-    private equationService : EquationService
-  ) { }
+    private equationService : EquationService,
+    @Inject(ElementRef) elementRef: ElementRef,
+    private renderer: Renderer
+  ) {
+    this.elementRef = elementRef;
+  }
 
   ngOnInit() {
   }
@@ -32,6 +37,23 @@ export class EquationsComponent implements OnInit {
     {
       this.inputString = '';
       this.equation = null;
+    }
+  }
+
+  setVariableHighlights(ids: string[], showHighlight: boolean)
+  {
+    for (let id of ids)
+    {
+      let variableElement = this.elementRef.nativeElement.querySelector('#' + id);
+
+      if (showHighlight)
+      {
+        this.renderer.setElementStyle(variableElement, 'text-shadow', '0px 0px 10px firebrick');
+      }
+      else
+      {
+        this.renderer.setElementStyle(variableElement, 'text-shadow', 'initial');
+      }
     }
   }
 
