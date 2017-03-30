@@ -32,7 +32,7 @@
   <h6 class="card-header">Variables</h6>
   <div class="card-block p-0">
     <ul class="list-group list-group-flush">
-      <li *ngFor="let variable of equation.Variables" class="list-group-item">
+      <li *ngFor="let variable of equation.Variables" class="list-group-item" (mouseenter)="setVariableHighlights(variable.ids, true);" (mouseleave)="setVariableHighlights(variable.ids, false);">
         {{ variable.name }}
       </li>
     </ul>
