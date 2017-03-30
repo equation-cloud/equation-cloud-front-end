@@ -52,7 +52,7 @@ export class EquationsComponent implements OnInit {
       }
       else
       {
-        this.renderer.setElementStyle(variableElement, 'text-shadow', 'initial');
+        this.renderer.setElementStyle(variableElement, 'text-shadow', 'none');
       }
     }
   }
