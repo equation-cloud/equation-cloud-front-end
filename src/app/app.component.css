@@ -1,0 +1,8 @@
+.content-wrapper {
+  min-height: 100vh;
+}
+
+.content {
+  padding-top: 4.5rem;
+  flex: 1;
+}

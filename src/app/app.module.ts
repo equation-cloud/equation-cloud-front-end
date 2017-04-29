@@ -9,13 +9,15 @@ import { MathJaxDirective } from './mathjax.directive';
 import { EquationsComponent } from './equations/equations.component';
 import { AppReadyEventService } from './app-ready-event.service';
 import { ClipboardModule } from 'ngx-clipboard';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     MathJaxDirective,
-    EquationsComponent
+    EquationsComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
