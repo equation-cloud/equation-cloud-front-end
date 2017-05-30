@@ -1,38 +1,26 @@
-<div *ngIf="equation?.lexerErrors" class="alert alert-danger w-75 mx-auto" role="alert">
-  <h4 class="alert-heading">Lexer Errors</h4>
-  <ul class="mb-0">
-    <li *ngFor="let error of equation.lexerErrors">{{ error.message }}</li>
-  </ul>
-</div>
-<div *ngIf="equation?.parserErrors" class="alert alert-danger w-75 mx-auto" role="alert">
-  <h4 class="alert-heading">Parser Errors</h4>
-  <ul class="mb-0">
-    <li *ngFor="let error of equation.parserErrors">{{ error.message }}</li>
-  </ul>
-</div>
 <div class="card w-75 mx-auto mb-3">
   <div class="card-block">
     <div class="input-group input-group-lg">
       <span class="input-group-addon">Equation:</span>
-      <input type="text" class="form-control" [(ngModel)]="inputString" placeholder="y=\sqrt{x}" (keyup.enter)="updateEquation()">
+      <input type="text" class="form-control" [(ngModel)]="inputString" placeholder="y=x^2/4" (keyup.enter)="updateEquation()">
     </div>
   </div>
 </div>
-<div *ngIf="equation?.RawTeX" class="card w-75 mx-auto mb-3">
+<div *ngIf="rawTeX" class="card w-75 mx-auto mb-3">
   <div class="card-block text-center">
-    <div [MathJax]="equation.DecoratedTeX"></div>
+    <div [MathJax]="decoratedTeX"></div>
   </div>
   <div class="card-footer text-right">
-    <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="equation.RawTeX">
+    <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="rawTeX">
       <i class="fa fa-clipboard fa-lg" aria-hidden="true"></i> Copy TeX
     </button>
   </div>
 </div>
-<div *ngIf="equation?.Variables?.length > 0" class="card w-75 mx-auto">
+<div *ngIf="expression?.Variables?.length > 0" class="card w-75 mx-auto">
   <h6 class="card-header">Variables</h6>
   <div class="card-block p-0">
     <ul class="list-group list-group-flush">
-      <li *ngFor="let variable of equation.Variables" class="list-group-item" (mouseenter)="setVariableHighlights(variable.ids, true);" (mouseleave)="setVariableHighlights(variable.ids, false);">
+      <li *ngFor="let variable of expression.Variables" class="list-group-item" (mouseenter)="setVariableHighlights(variable, true);" (mouseleave)="setVariableHighlights(variable, false);">
         {{ variable.name }}
       </li>
     </ul>
