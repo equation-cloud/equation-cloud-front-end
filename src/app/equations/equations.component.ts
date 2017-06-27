@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, Renderer, OnInit } from '@angular/core';
 import { MathJaxDirective } from '../mathjax.directive';
-import { Expression, generateRawTeX, generateDecoratedTeX } from 'ecca';
+import { Expression, Variable, generateRawTeX, generateDecoratedTeX } from 'ecca';
 
 @Component({
   selector: 'app-equations',
@@ -41,7 +41,7 @@ export class EquationsComponent implements OnInit {
     }
   }
 
-  setVariableHighlights(variable: any, showHighlight: boolean) {
+  setVariableHighlights(variable: Variable, showHighlight: boolean) {
     if (variable.instances.length > 0) {
       // Repeat for each instance of the the specified variable
       for (let identifierElement of variable.instances) {
