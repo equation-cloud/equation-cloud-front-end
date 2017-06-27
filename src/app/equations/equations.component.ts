@@ -26,12 +26,23 @@ export class EquationsComponent implements OnInit {
 
   updateEquation() {
     if (/\S/.test(this.inputString)) {
-      // String is not empty and not just whitespace, generate an Expression from it
-      this.expression = new Expression(this.inputString);
+      // String is not empty and not just whitespace, nullify the existing
+      // variable in case the Expression constructor fails (and clear the TeX
+      // strings)
+      this.expression = null;
+      this.rawTeX = '';
+      this.decoratedTeX = '';
 
-      // Generate the raw and decorated TeX from the Expression
-      this.rawTeX = generateRawTeX(this.expression);
-      this.decoratedTeX = generateDecoratedTeX(this.expression);
+      // Attempt to generate an Expression object from the string
+      try {
+        this.expression = new Expression(this.inputString);
+      } catch (e) {}
+
+      if (this.expression != null) {
+        // Generate the raw and decorated TeX from the Expression
+        this.rawTeX = generateRawTeX(this.expression);
+        this.decoratedTeX = generateDecoratedTeX(this.expression);
+      }
     } else {
       // String cannot be used to generate an Expression, clear related member variables
       this.inputString = '';
