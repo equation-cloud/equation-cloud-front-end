@@ -12,7 +12,8 @@ export class EquationsComponent implements OnInit {
   expression : Expression;
   rawTeX : string;
   decoratedTeX : string;
-  elementRef: ElementRef;
+  elementRef : ElementRef;
+  showOutput : boolean = false;
 
   constructor(
     @Inject(ElementRef) elementRef: ElementRef,
@@ -66,6 +67,14 @@ export class EquationsComponent implements OnInit {
           this.renderer.setElementStyle(variableElement, 'text-shadow', 'none');
         }
       }
+    }
+  }
+
+  handleMathReady(mathReady: boolean) {
+    if (this.showOutput) {
+      this.showOutput = mathReady;
+    } else {
+      setTimeout(() => { this.showOutput = mathReady; }, 175);
     }
   }
 

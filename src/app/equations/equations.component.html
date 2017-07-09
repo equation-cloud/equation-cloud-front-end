@@ -18,9 +18,9 @@
     </div>
   </div>
 </div>
-<div *ngIf="rawTeX" class="card w-75 mx-auto mb-3">
+<div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto mb-3">
   <div class="card-block text-center">
-    <div [MathJax]="decoratedTeX"></div>
+    <div [MathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
   </div>
   <div class="card-footer text-right">
     <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="rawTeX">
@@ -28,7 +28,7 @@
     </button>
   </div>
 </div>
-<div *ngIf="expression?.Variables?.length > 0" class="card w-75 mx-auto">
+<div *ngIf="expression?.Variables?.length > 0" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto">
   <h6 class="card-header">Variables</h6>
   <div class="card-block p-0">
     <ul class="list-group list-group-flush">
