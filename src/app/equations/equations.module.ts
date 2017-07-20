@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { EquationsRoutingModule } from './equations-routing.module';
 import { EquationListComponent } from './equation-list/equation-list.component';
 import { EquationDetailComponent } from './equation-detail/equation-detail.component';
+import { MathJaxDirective } from './math-jax.directive';
 
 @NgModule({
   imports: [
     CommonModule,
     EquationsRoutingModule
   ],
-  declarations: [EquationListComponent, EquationDetailComponent]
+  declarations: [EquationListComponent, EquationDetailComponent, MathJaxDirective]
 })
 export class EquationsModule { }

@@ -20,7 +20,7 @@
 </div>
 <div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto mb-3">
   <div class="card-block text-center">
-    <div [MathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
+    <div [appMathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
   </div>
   <div class="card-footer text-right">
     <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="rawTeX">
