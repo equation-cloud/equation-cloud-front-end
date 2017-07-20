@@ -1,3 +1,40 @@
-<p>
-  equation-detail works!
-</p>
+<div *ngIf="expression?.LexerErrors?.length > 0" class="alert alert-danger w-75 mx-auto" role="alert">
+  <h4 class="alert-heading">Lexer Errors</h4>
+  <ul class="mb-0">
+    <li *ngFor="let lexerError of expression.LexerErrors">{{ lexerError.message }}</li>
+  </ul>
+</div>
+<div *ngIf="expression?.ParserErrors?.length > 0" class="alert alert-danger w-75 mx-auto" role="alert">
+  <h4 class="alert-heading">Parser Errors</h4>
+  <ul class="mb-0">
+    <li *ngFor="let parserError of expression.ParserErrors">{{ parserError.message }}</li>
+  </ul>
+</div>
+<div class="card w-75 mx-auto mb-3">
+  <div class="card-block">
+    <div class="input-group input-group-lg">
+      <span class="input-group-addon">Equation:</span>
+      <input type="text" class="form-control" [(ngModel)]="inputString" placeholder="y=x^2/4" (keyup.enter)="updateEquation()">
+    </div>
+  </div>
+</div>
+<div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto mb-3">
+  <div class="card-block text-center">
+    <div [MathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
+  </div>
+  <div class="card-footer text-right">
+    <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="rawTeX">
+      <i class="fa fa-clipboard fa-lg" aria-hidden="true"></i> Copy TeX
+    </button>
+  </div>
+</div>
+<div *ngIf="expression?.Variables?.length > 0" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto">
+  <h6 class="card-header">Variables</h6>
+  <div class="card-block p-0">
+    <ul class="list-group list-group-flush">
+      <li *ngFor="let variable of expression.Variables" class="list-group-item" (mouseenter)="setVariableHighlights(variable, true);" (mouseleave)="setVariableHighlights(variable, false);">
+        {{ variable.name }}
+      </li>
+    </ul>
+  </div>
+</div>
