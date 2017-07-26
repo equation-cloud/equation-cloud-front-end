@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [];
+import { EquationListComponent } from './equation-list/equation-list.component';
+import { EquationDetailComponent } from './equation-detail/equation-detail.component';
+
+const routes: Routes = [
+  { path: 'equations',  component: EquationListComponent }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
