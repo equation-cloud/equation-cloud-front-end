@@ -19,7 +19,7 @@
   </div>
 </div>
 <div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card mb-3">
-  <div class="card-block text-center">
+  <div class="card-block text-center py-3">
     <div [appMathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
   </div>
   <div class="card-footer text-right">
