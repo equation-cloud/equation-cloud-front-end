@@ -1,13 +1,13 @@
 import { Component, ElementRef, Inject, Renderer, OnInit } from '@angular/core';
-import { MathJaxDirective } from '../mathjax.directive';
+import { MathJaxDirective } from '../math-jax.directive';
 import { Expression, Variable, generateRawTeX, generateDecoratedTeX } from 'ecca';
 
 @Component({
-  selector: 'app-equations',
-  templateUrl: './equations.component.html',
-  styleUrls: ['./equations.component.css']
+  selector: 'app-equation-detail',
+  templateUrl: './equation-detail.component.html',
+  styleUrls: ['./equation-detail.component.css']
 })
-export class EquationsComponent implements OnInit {
+export class EquationDetailComponent implements OnInit {
   inputString : string = '';
   expression : Expression;
   rawTeX : string;
@@ -16,8 +16,8 @@ export class EquationsComponent implements OnInit {
   showOutput : boolean = false;
 
   constructor(
-    @Inject(ElementRef) elementRef: ElementRef,
-    private renderer: Renderer
+    @Inject(ElementRef) elementRef : ElementRef,
+    private renderer : Renderer
   ) {
     this.elementRef = elementRef;
   }

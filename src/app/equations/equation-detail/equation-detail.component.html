@@ -1,16 +1,16 @@
-<div *ngIf="expression?.LexerErrors?.length > 0" class="alert alert-danger w-75 mx-auto" role="alert">
+<div *ngIf="expression?.LexerErrors?.length > 0" class="alert alert-danger" role="alert">
   <h4 class="alert-heading">Lexer Errors</h4>
   <ul class="mb-0">
     <li *ngFor="let lexerError of expression.LexerErrors">{{ lexerError.message }}</li>
   </ul>
 </div>
-<div *ngIf="expression?.ParserErrors?.length > 0" class="alert alert-danger w-75 mx-auto" role="alert">
+<div *ngIf="expression?.ParserErrors?.length > 0" class="alert alert-danger" role="alert">
   <h4 class="alert-heading">Parser Errors</h4>
   <ul class="mb-0">
     <li *ngFor="let parserError of expression.ParserErrors">{{ parserError.message }}</li>
   </ul>
 </div>
-<div class="card w-75 mx-auto mb-3">
+<div class="card mb-3">
   <div class="card-block">
     <div class="input-group input-group-lg">
       <span class="input-group-addon">Equation:</span>
@@ -18,9 +18,9 @@
     </div>
   </div>
 </div>
-<div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto mb-3">
-  <div class="card-block text-center">
-    <div [MathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
+<div *ngIf="rawTeX" [attr.hidden]="showOutput ? null : true" class="card mb-3">
+  <div class="card-block text-center py-3">
+    <div [appMathJax]="decoratedTeX" (mathReady)="handleMathReady($event)"></div>
   </div>
   <div class="card-footer text-right">
     <button type="button" class="btn btn-secondary btn-sm" ngxClipboard [cbContent]="rawTeX">
@@ -28,7 +28,7 @@
     </button>
   </div>
 </div>
-<div *ngIf="expression?.Variables?.length > 0" [attr.hidden]="showOutput ? null : true" class="card w-75 mx-auto">
+<div *ngIf="expression?.Variables?.length > 0" [attr.hidden]="showOutput ? null : true" class="card">
   <h6 class="card-header">Variables</h6>
   <div class="card-block p-0">
     <ul class="list-group list-group-flush">
